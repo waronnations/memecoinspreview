@@ -231,7 +231,7 @@ export async function getNationDetails(
            is_protected, protection_expires_at,
            join_contribution_wardog, join_contribution_warcat,
            redemption_price_wardog, redemption_price_warcat,
-           faction
+           faction, citadel_level
     FROM nations WHERE id = ${nationId} LIMIT 1
   `;
   const n = nationRes.rows[0];
@@ -368,6 +368,7 @@ export async function getNationDetails(
     vaultWardog: Number(n.vault_wardog || 0),
     vaultWarcat: Number(n.vault_warcat || 0),
     reputation: Number(n.reputation || 0),
+    citadelLevel: Number(n.citadel_level || 0),
     activeBuff: n.active_buff ? String(n.active_buff) : null,
     buffExpiresAt: n.buff_expires_at ? String(n.buff_expires_at) : null,
     lastNukeReceivedAt: n.last_nuke_received_at

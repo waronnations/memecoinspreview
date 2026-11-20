@@ -1,3 +1,4 @@
+import { WARDOG_CA } from "@/lib/tokens";
 // War Vault reward rules. Pure and browser-safe: the server uses them to
 // distribute each weekly cycle pool, the UI uses them to explain payouts.
 
@@ -13,6 +14,8 @@ export type VaultAsset = {
 };
 
 export const TON_ASSET: VaultAsset = { key: "ton", symbol: "GRAM", kind: "native", decimals: 9, minClaim: 0.05 };
+/** $WARDOG jetton (master address) — claimable from the War Vault like GRAM and USD₮. */
+export const WARDOG_ASSET: VaultAsset = { key: WARDOG_CA, symbol: "WARDOG", kind: "jetton", decimals: 9, minClaim: 1 };
 
 /** Share of each cycle pool by bucket. Must sum to 1. */
 export const POOL_SPLIT = {

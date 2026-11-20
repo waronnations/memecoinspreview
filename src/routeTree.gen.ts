@@ -28,6 +28,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as ApiPublicAgentsRouteImport } from './routes/api/public/agents'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicJettonLogoMasterRouteImport } from './routes/api/public/jetton-logo/$master'
+import { Route as ApiPublicJobsWardogBurnsRouteImport } from './routes/api/public/jobs/wardog-burns'
 import { Route as ApiPublicNftAssetIdRouteImport } from './routes/api/public/nft/$assetId'
 import { Route as ApiPublicTelegramLoginRouteImport } from './routes/api/public/telegram/login'
 import { Route as ApiPublicTelegramTickRouteImport } from './routes/api/public/telegram/tick'
@@ -130,6 +131,12 @@ const ApiPublicJettonLogoMasterRoute =
     path: '/api/public/jetton-logo/$master',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicJobsWardogBurnsRoute =
+  ApiPublicJobsWardogBurnsRouteImport.update({
+    id: '/api/public/jobs/wardog-burns',
+    path: '/api/public/jobs/wardog-burns',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNftAssetIdRoute = ApiPublicNftAssetIdRouteImport.update({
   id: '/api/public/nft/$assetId',
   path: '/api/public/nft/$assetId',
@@ -172,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/api/public/agents': typeof ApiPublicAgentsRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/jetton-logo/$master': typeof ApiPublicJettonLogoMasterRoute
+  '/api/public/jobs/wardog-burns': typeof ApiPublicJobsWardogBurnsRoute
   '/api/public/nft/$assetId': typeof ApiPublicNftAssetIdRouteWithChildren
   '/api/public/telegram/login': typeof ApiPublicTelegramLoginRoute
   '/api/public/telegram/tick': typeof ApiPublicTelegramTickRoute
@@ -196,6 +204,7 @@ export interface FileRoutesByTo {
   '/api/public/agents': typeof ApiPublicAgentsRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/jetton-logo/$master': typeof ApiPublicJettonLogoMasterRoute
+  '/api/public/jobs/wardog-burns': typeof ApiPublicJobsWardogBurnsRoute
   '/api/public/nft/$assetId': typeof ApiPublicNftAssetIdRouteWithChildren
   '/api/public/telegram/login': typeof ApiPublicTelegramLoginRoute
   '/api/public/telegram/tick': typeof ApiPublicTelegramTickRoute
@@ -222,6 +231,7 @@ export interface FileRoutesById {
   '/api/public/agents': typeof ApiPublicAgentsRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/jetton-logo/$master': typeof ApiPublicJettonLogoMasterRoute
+  '/api/public/jobs/wardog-burns': typeof ApiPublicJobsWardogBurnsRoute
   '/api/public/nft/$assetId': typeof ApiPublicNftAssetIdRouteWithChildren
   '/api/public/telegram/login': typeof ApiPublicTelegramLoginRoute
   '/api/public/telegram/tick': typeof ApiPublicTelegramTickRoute
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/api/public/agents'
     | '/api/public/health'
     | '/api/public/jetton-logo/$master'
+    | '/api/public/jobs/wardog-burns'
     | '/api/public/nft/$assetId'
     | '/api/public/telegram/login'
     | '/api/public/telegram/tick'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/api/public/agents'
     | '/api/public/health'
     | '/api/public/jetton-logo/$master'
+    | '/api/public/jobs/wardog-burns'
     | '/api/public/nft/$assetId'
     | '/api/public/telegram/login'
     | '/api/public/telegram/tick'
@@ -298,6 +310,7 @@ export interface FileRouteTypes {
     | '/api/public/agents'
     | '/api/public/health'
     | '/api/public/jetton-logo/$master'
+    | '/api/public/jobs/wardog-burns'
     | '/api/public/nft/$assetId'
     | '/api/public/telegram/login'
     | '/api/public/telegram/tick'
@@ -318,6 +331,7 @@ export interface RootRouteChildren {
   ApiPublicAgentsRoute: typeof ApiPublicAgentsRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicJettonLogoMasterRoute: typeof ApiPublicJettonLogoMasterRoute
+  ApiPublicJobsWardogBurnsRoute: typeof ApiPublicJobsWardogBurnsRoute
   ApiPublicNftAssetIdRoute: typeof ApiPublicNftAssetIdRouteWithChildren
   ApiPublicTelegramLoginRoute: typeof ApiPublicTelegramLoginRoute
   ApiPublicTelegramTickRoute: typeof ApiPublicTelegramTickRoute
@@ -458,6 +472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicJettonLogoMasterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/wardog-burns': {
+      id: '/api/public/jobs/wardog-burns'
+      path: '/api/public/jobs/wardog-burns'
+      fullPath: '/api/public/jobs/wardog-burns'
+      preLoaderRoute: typeof ApiPublicJobsWardogBurnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/nft/$assetId': {
       id: '/api/public/nft/$assetId'
       path: '/api/public/nft/$assetId'
@@ -537,6 +558,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAgentsRoute: ApiPublicAgentsRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicJettonLogoMasterRoute: ApiPublicJettonLogoMasterRoute,
+  ApiPublicJobsWardogBurnsRoute: ApiPublicJobsWardogBurnsRoute,
   ApiPublicNftAssetIdRoute: ApiPublicNftAssetIdRouteWithChildren,
   ApiPublicTelegramLoginRoute: ApiPublicTelegramLoginRoute,
   ApiPublicTelegramTickRoute: ApiPublicTelegramTickRoute,

@@ -7,6 +7,7 @@ import { sql } from "@/lib/db/client.server";
 import { nextWeeklyBattle } from "@/lib/war-cycle/cycle";
 import {
   TON_ASSET,
+  WARDOG_ASSET,
   VOUCHER_TTL_SEC,
   PACK_FEE_TO_POOL,
   canClaim,
@@ -90,6 +91,10 @@ export function ensureVaultTables(): Promise<void> {
       await sql`
         INSERT INTO vault_assets (asset_key, symbol, kind, decimals, min_claim)
         VALUES ('ton', 'GRAM', 'native', 9, ${TON_ASSET.minClaim})
+        ON CONFLICT (asset_key) DO NOTHING`;
+      await sql`
+        INSERT INTO vault_assets (asset_key, symbol, kind, decimals, min_claim)
+        VALUES (${WARDOG_ASSET.key}, ${WARDOG_ASSET.symbol}, 'jetton', ${WARDOG_ASSET.decimals}, ${WARDOG_ASSET.minClaim})
         ON CONFLICT (asset_key) DO NOTHING`;
       const gram = process.env["GRAM_JETTON_MASTER"];
       if (gram) {

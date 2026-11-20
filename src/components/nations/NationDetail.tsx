@@ -10,6 +10,7 @@ import {
   LeaderProtectionControls,
 } from "./detail/VaultSection";
 import { BuffsSection } from "./detail/BuffsSection";
+import { CitadelCard } from "./detail/CitadelCard";
 import { LeaderCard } from "./detail/LeaderCard";
 import { StatsGrid } from "./detail/StatsGrid";
 import { MembersList } from "./detail/MembersList";
@@ -41,6 +42,7 @@ export function NationDetail({
   historyLoading = false,
   kicking = null,
   handleKick,
+  onCitadelUpgraded,
 }: {
   selected: NationDetails | null;
   setSelected: (v: NationDetails | null) => void;
@@ -66,6 +68,7 @@ export function NationDetail({
   historyLoading?: boolean;
   kicking?: number | null;
   handleKick?: (targetUserId: number) => Promise<void>;
+  onCitadelUpgraded?: (nationId: number) => void;
 }) {
   return (
     <TacticalModal
@@ -91,6 +94,14 @@ export function NationDetail({
                   selected={selected}
                   setShowDonateModal={setShowDonateModal}
                 />
+
+                {selected.isMember && (
+                  <CitadelCard
+                    selected={selected}
+                    onUpgraded={() => onCitadelUpgraded?.(selected.id)}
+                    onTopUp={() => setShowDonateModal(true)}
+                  />
+                )}
 
                 <ProtectionStatus selected={selected} />
 

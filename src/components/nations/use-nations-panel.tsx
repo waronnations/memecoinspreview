@@ -557,6 +557,7 @@ export function useNationsPanel({
     historyLoading,
     kicking,
     handleKick,
+    onCitadelUpgraded: (nationId: number) => { void openDetails(nationId); },
     redemptionWardog,
     setRedemptionWardog,
     redemptionWarcat,

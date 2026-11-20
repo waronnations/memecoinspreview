@@ -61,6 +61,8 @@ export interface NationDetails {
   vaultWardog: number;
   vaultWarcat: number;
   reputation: number;
+  /** Citadel Fortification level (0–5). */
+  citadelLevel?: number;
   activeBuff: string | null;
   buffExpiresAt: string | null;
   lastNukeReceivedAt?: string | null;
