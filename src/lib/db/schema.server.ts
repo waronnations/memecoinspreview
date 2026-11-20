@@ -29,7 +29,6 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS referral_milestones_claimed INT NOT NULL DEFAULT 0`;
-      await sql`ALTER TABLE nations ADD COLUMN IF NOT EXISTS citadel_level INT NOT NULL DEFAULT 0`;
       await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nation_id BIGINT`;
       await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_traitor BOOLEAN NOT NULL DEFAULT FALSE`;
       await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS traitor_since TIMESTAMPTZ`;
@@ -178,6 +177,7 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE nations ADD COLUMN IF NOT EXISTS redemption_price_warcat NUMERIC(20,4) NOT NULL DEFAULT 15`;
       // Faction alignment (wardog | warcat | NULL) read by Syndicates lists and vault payouts.
       await sql`ALTER TABLE nations ADD COLUMN IF NOT EXISTS faction TEXT`;
+      await sql`ALTER TABLE nations ADD COLUMN IF NOT EXISTS citadel_level INT NOT NULL DEFAULT 0`;
 
       await sql`CREATE INDEX IF NOT EXISTS nations_tag_idx ON nations (tag)`;
       await sql`CREATE INDEX IF NOT EXISTS nations_glory_idx ON nations (total_glory DESC)`;

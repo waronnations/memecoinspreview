@@ -13,7 +13,7 @@
       "source": "drizzle/migrations/0000_game_schema_and_exec.sql + runtime bootstrap in src/lib/db/schema.server.ts (schema game)",
       "outcome": "migrate",
       "status": "verified",
-      "next_action": "game schema + service-role-only game_exec_sql applied in Lovable Cloud; server bootstraps game tables on demand (writes confirmed)"
+      "next_action": "game schema + game_exec_sql applied; fixed bootstrap order (nations column added before table existed on a fresh database); all 47 game tables created"
     },
     {
       "capability": "records",
@@ -27,7 +27,7 @@
       "source": "Telegram Mini App initData -> game.users.telegram_id, TON wallet ton_proof; signed cookie session (no email/password accounts)",
       "outcome": "preserve",
       "status": "pending",
-      "next_action": "App-owned Telegram/wallet sign-in kept (no hosted auth provider to replace); needs TELEGRAM_BOT_TOKEN and SESSION_SECRET; existing players reconnect by telegram_id after users export import"
+      "next_action": "Telegram sign-in verified with a temporary player (valid signature accepted + session cookie, tampered rejected; test player removed). Existing players reconnect by telegram_id after users export import"
     },
     {
       "capability": "authorization",
@@ -83,7 +83,7 @@
       "source": "TELEGRAM_BOT_TOKEN, SESSION_SECRET, TONAPI_KEY, CLAIM_SIGNER_PRIVATE_KEY, ADMIN_WALLETS, etc.",
       "outcome": "preserve",
       "status": "pending",
-      "next_action": "SESSION_SECRET generated; TELEGRAM_BOT_TOKEN requested via secure form; money-path keys later"
+      "next_action": "SESSION_SECRET generated, TELEGRAM_BOT_TOKEN saved; money-path and admin keys requested when those features are switched on"
     },
     {
       "capability": "cutover",
@@ -97,7 +97,7 @@
       "source": "",
       "outcome": "migrate",
       "status": "pending",
-      "next_action": "Pages, tests, DB write verified; Telegram sign-in needs TELEGRAM_BOT_TOKEN; old player records not yet imported"
+      "next_action": "Build, tests, pages (phone size), DB write/read and Telegram sign-in verified; old player records not yet imported"
     }
   ]
 }
