@@ -1,0 +1,103 @@
+{
+  "source": "code archive archive-to-world-studio-main.zip (WAR ON NATIONS, TanStack Start game on TON, previously a Lovable project)",
+  "capabilities": [
+    {
+      "capability": "code",
+      "source": "src/, public/, contracts/, wrappers/, scripts/, tests/",
+      "outcome": "migrate",
+      "status": "verified",
+      "next_action": "Done: all pages load on phone size, 319/319 tests pass, build clean"
+    },
+    {
+      "capability": "schema",
+      "source": "drizzle/migrations/0000_game_schema_and_exec.sql + runtime bootstrap in src/lib/db/schema.server.ts (schema game)",
+      "outcome": "migrate",
+      "status": "verified",
+      "next_action": "game schema + service-role-only game_exec_sql applied in Lovable Cloud; server bootstraps game tables on demand (writes confirmed)"
+    },
+    {
+      "capability": "records",
+      "source": "previous database (Neon or Lovable Cloud schema game); no export in archive",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Request per-table CSV/JSON export of game tables after preview"
+    },
+    {
+      "capability": "auth identities",
+      "source": "Telegram Mini App initData -> game.users.telegram_id, TON wallet ton_proof; signed cookie session (no email/password accounts)",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "App-owned Telegram/wallet sign-in kept (no hosted auth provider to replace); needs TELEGRAM_BOT_TOKEN and SESSION_SECRET; existing players reconnect by telegram_id after users export import"
+    },
+    {
+      "capability": "authorization",
+      "source": "users.is_admin / ADMIN_WALLETS + ton_proof admin login",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Needs ADMIN_WALLETS for admin dashboard"
+    },
+    {
+      "capability": "uploaded file bytes",
+      "source": "public/images/gifts (bundled)",
+      "outcome": "migrate",
+      "status": "verified",
+      "next_action": "public/images/gifts copied"
+    },
+    {
+      "capability": "external providers",
+      "source": "TonAPI, Toncenter, STON.fi, DeDust, swap.coffee, GeckoTerminal, Upstash Redis, Pinata, Sentry, PostHog, TonConnect",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Public market data should work keyless; provider keys requested when features are switched on"
+    },
+    {
+      "capability": "AI",
+      "source": "@lovable.dev/ai-gateway image generation",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "LOVABLE_API_KEY present; image generation not exercised"
+    },
+    {
+      "capability": "public endpoints",
+      "source": "/api/public/{agents,health,jetton-logo,nft,telegram/login,telegram/tick}, /mcp, /.well-known",
+      "outcome": "preserve",
+      "status": "verified",
+      "next_action": "/api/public/health (db ok) and /api/public/agents respond"
+    },
+    {
+      "capability": "schedules",
+      "source": "/api/public/telegram/tick (CRON_SECRET / LOVABLE_CRON_SECRET)",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Optional external pinger needs CRON_SECRET"
+    },
+    {
+      "capability": "on-chain contracts",
+      "source": "ClaimTreasury, WarVault (TON)",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "Money paths stay off until MONEY_PATHS_ENABLED and wallet/signer keys are set"
+    },
+    {
+      "capability": "secrets",
+      "source": "TELEGRAM_BOT_TOKEN, SESSION_SECRET, TONAPI_KEY, CLAIM_SIGNER_PRIVATE_KEY, ADMIN_WALLETS, etc.",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "SESSION_SECRET generated; TELEGRAM_BOT_TOKEN requested via secure form; money-path keys later"
+    },
+    {
+      "capability": "cutover",
+      "source": "Telegram bot Mini App URL, tonconnect-manifest url, cron caller",
+      "outcome": "preserve",
+      "status": "pending",
+      "next_action": "After publishing, point bot Mini App URL and tonconnect-manifest at the new address"
+    },
+    {
+      "capability": "verification",
+      "source": "",
+      "outcome": "migrate",
+      "status": "pending",
+      "next_action": "Pages, tests, DB write verified; Telegram sign-in needs TELEGRAM_BOT_TOKEN; old player records not yet imported"
+    }
+  ]
+}

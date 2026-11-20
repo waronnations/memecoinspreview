@@ -8,8 +8,28 @@
 // hosting already compresses at the edge.
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
+import type { Plugin } from "vite";
+
+// Browser-only Buffer polyfill: exact "buffer" imports in the client bundle resolve to the npm
+// package. The server keeps Node's built-in buffer (the npm package is CommonJS and breaks SSR).
+function clientBufferAlias(): Plugin {
+  return {
+    name: "client-buffer-alias",
+    enforce: "pre",
+    async resolveId(id, importer, options) {
+      if (id !== "buffer" || this.environment?.name !== "client") return null;
+      return this.resolve("buffer/", importer, { ...options, skipSelf: true });
+    },
+  };
+}
 
 export default defineConfig({
+  vite: {
+    plugins: [clientBufferAlias(), mcpPlugin()],
+    optimizeDeps: { include: ["buffer"] },
+    define: { global: "globalThis" },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

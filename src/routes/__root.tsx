@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { OfflineBanner } from "@/components/system/OfflineBanner";
 import {
   Outlet,
   Link,
@@ -6,12 +7,20 @@ import {
   useRouter,
   HeadContent,
   Scripts,
-  type ErrorComponentProps,
+  ClientOnly,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { Suspense, lazy, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initMonitoring, captureException } from "../lib/monitoring";
+import { trackOnce } from "../lib/analytics";
+import { AppErrorBoundary } from "../components/ErrorBoundary";
+
+const TonConnectProvider = lazy(async () => {
+  await import("@/lib/onchain/buffer-polyfill");
+  return import("@/components/TonConnectProvider");
+});
 
 function NotFoundComponent() {
   return (
@@ -35,11 +44,12 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: ErrorComponentProps) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    captureException(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -75,28 +85,37 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Replace these placeholders with the app's name and description when first building the app.
-    // Each content route, / included, must still set its own head(). Never add og:image or
-    // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0a0a0f" },
+      { title: "War On Nations — Merge. Build. Conquer. Feed the Pack." },
+      {
+        name: "description",
+        content:
+          "WAR On Nations is a Telegram memecoin war game. Absorb rival memecoins on the Coin Board, earn $WARDOG & $WARCAT, and rise from Private to Warlord.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:title", content: "War On Nations — Merge. Build. Conquer. Feed the Pack." },
+      { name: "twitter:title", content: "War On Nations — Merge. Build. Conquer. Feed the Pack." },
+      {
+        property: "og:description",
+        content:
+          "WAR On Nations is a Telegram memecoin war game. Absorb rival memecoins on the Coin Board, earn $WARDOG & $WARCAT, and rise from Private to Warlord.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "WAR On Nations is a Telegram memecoin war game. Absorb rival memecoins on the Coin Board, earn $WARDOG & $WARCAT, and rise from Private to Warlord.",
+      },
+
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [{ src: "https://telegram.org/js/telegram-web-app.js", async: true }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -106,7 +125,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      // Suppress Telegram WebApp hydration mismatch on style
+      suppressHydrationWarning
+    >
       <head>
         <HeadContent />
       </head>
@@ -121,10 +144,41 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    initMonitoring();
+    trackOnce("first_open");
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/*
+        IMPORTANT: Do NOT render <Outlet /> in ClientOnly/Suspense fallbacks.
+        Routes that call useTonAddress / useTonConnectUI would crash without
+        TonConnectUIProvider (TonConnectProviderNotSetError).
+      */}
+      <ClientOnly
+        fallback={
+          <div className="hud-shell flex min-h-screen items-center justify-center font-mono text-sm font-black uppercase text-neon-cyan">
+            Loading…
+          </div>
+        }
+      >
+        <Suspense
+          fallback={
+            <div className="hud-shell flex min-h-screen items-center justify-center font-mono text-sm font-black uppercase text-neon-cyan">
+              Loading…
+            </div>
+          }
+        >
+          <AppErrorBoundary>
+            <TonConnectProvider>
+              <OfflineBanner />
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </TonConnectProvider>
+          </AppErrorBoundary>
+        </Suspense>
+      </ClientOnly>
     </QueryClientProvider>
   );
 }
